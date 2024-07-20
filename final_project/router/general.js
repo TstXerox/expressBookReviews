@@ -23,9 +23,17 @@ public_users.post("/register", (req, res) => {
 
 });
 
+let promise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("Promise resolved");
+    }, 7000);
+});
+
 // Get the book list available in the shop
 public_users.get('/', function (req, res) {
-    res.send(JSON.stringify(books, null, 4));
+    promise.then(successMessage => {
+        res.send(JSON.stringify(books, null, 4));
+    });
 });
 
 // Get book details based on ISBN
@@ -33,8 +41,11 @@ public_users.get('/isbn/:isbn', function (req, res) {
     const isbn = req.params.isbn;
     const book = books[isbn];
     
+    
     if (book) {
-        res.send(book);
+        promise.then(successMessage => {
+            res.send(book);
+        });
     } else {
         res.status(404).json({message: `Book with ISBN ${isbn} not found`});
     }
@@ -53,7 +64,9 @@ public_users.get('/author/:author', function (req, res) {
     });
 
     if (booksByAuthor.length > 0) {
-        res.send(JSON.stringify(booksByAuthor));
+        promise.then(successMessage => {
+            res.send(JSON.stringify(booksByAuthor));
+        });
     } else {
         res.status(404).json({message: `No books found by author ${author}`});
     }
@@ -72,7 +85,9 @@ public_users.get('/title/:title',function (req, res) {
     });
 
     if (booksByTitle.length > 0) {
-        res.send(JSON.stringify(booksByTitle));
+        promise.then(successMessage => {
+            res.send(JSON.stringify(booksByTitle));
+        });
     } else {
         res.status(404).json({message: `No books found by title ${title}`});
     }
